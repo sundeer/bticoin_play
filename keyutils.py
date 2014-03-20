@@ -1,3 +1,5 @@
+from multiprocessing.managers import public_methods
+
 __author__ = 'rs'
 
 import random
@@ -30,24 +32,28 @@ def publickey_to_address(public_key):
     ripemd160_of_sha256_with_network = '00' + ripemd160_of_sha256.encode('hex')
     #print 'ripemd160 of sha256 with network -> ', ripemd160_of_sha256_with_network
 
-    double_sha256 = hashlib.sha256(hashlib.sha256(ripemd160_of_sha256_with_network.decode('hex')).digest())
+    #double_sha256 = hashlib.sha256(hashlib.sha256(ripemd160_of_sha256_with_network.decode('hex')).digest())
     #print 'double sha256 of previous -> ', double_sha256.digest().encode('hex')
 
-    checksum = double_sha256.digest().encode('hex')[:8]
+    #checksum = double_sha256.digest().encode('hex')[:8]
     #print 'checksum -> ', checksum
 
-    with_checksum = ripemd160_of_sha256_with_network + checksum
+    #with_checksum = ripemd160_of_sha256_with_network + checksum
     #print 'with checksum -> ', with_checksum
 
-    address = base58.b58encode(with_checksum.decode('hex'))
+    address = base58.b58encode_check(ripemd160_of_sha256_with_network.decode('hex'))
+
+    #address = base58.b58encode(with_checksum.decode('hex'))
     #print 'address -> ', address
     return address
 
-def keyToAddr(s):
+
+def privatekey_to_address(s):
     return publickey_to_address(privatekey_to_publickey(s))
 
 # Warning: this random function is not cryptographically strong and is just for example
-private_key = ''.join(['{:x}'.format(random.randrange(16)) for x in range(64)])
+print ''
+#private_key = ''.join(['{:x}'.format(random.randrange(16)) for x in range(64)])
 private_key = 'f19c523315891e6e15ae0608a35eec2e00ebd6d1984cf167f46336dabd9b2de4'
 print 'private key -> ', private_key
 #print 'private key -> ', private_key_ken
@@ -62,4 +68,8 @@ print 'public key -> ', public_key
 
 address = publickey_to_address(public_key)
 print 'Bitcoin Address -> ', address
+
+print 'Bitcoin Address -> ', privatekey_to_address(private_key)
+
+
 
